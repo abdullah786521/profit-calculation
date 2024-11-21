@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profit and Loss Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url(https://cdn.dribbble.com/users/218217/screenshots/3610718/first_scene_blue_800x600_2_dribbble.gif);
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            padding: 20px;
+            background-color: rgba(9, 100, 211, 0.561);
+            border-radius: 10px;
+            box-shadow: 20px 15px 5px rgba(0, 56, 242, 0.753);
+        }
+        @keyframes rainbow {
+    0% { color: red; }
+    14% { color: orange; }
+    28% { color: yellow; }
+    42% { color: green; }
+    57% { color: blue; }
+    71% { color: indigo; }
+    85% { color: violet; }
+    100% { color: red; }
+}
+
+h1 {
+    animation: rainbow 5s linear infinite;
+}
+
+        h1 {
+            text-align: center;
+            color: rgba(13, 82, 230, 0.91)
+        }
+        .input-group {
+            margin-bottom: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 15px;
+            background-image: linear-gradient( rgba(7, 34, 182, 0.746),rgba(96, 9, 96, 0.581) , rgba(225, 89, 112, 0.644));
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            
+        }
+        button:hover {
+           
+            background-image: linear-gradient( rgba(201, 5, 5, 0.622),rgba(162, 173, 12, 0.581) , rgba(202, 98, 13, 0.822));
+            color: black;
+        }
+        .section {
+            margin-top: 20px;
+        }
+        .total {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .product-info {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .buy {
+            background-color: #d3ffd3;
+        }
+        .sell {
+            background-color: #ffdddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Profit and Loss Calculator</h1>
+        <div class="input-group">
+            <label for="productName">Product Name</label>
+            <input type="text" id="productName" placeholder="Enter product name" required>
+        </div>
+        <div class="input-group">
+            <label for="productPrice">Price</label>
+            <input type="number" id="productPrice" placeholder="Enter product price" required>
+        </div>
+        <div class="input-group">
+            <label for="buySell">Buy/Sell</label>
+            <select id="buySell">
+                <option value="buy">Buy</option>
+                <option value="sell">Sell</option>
+            </select>
+        </div>
+        <button onclick="addProduct()">Add Product</button>
+
+        <div id="buySection" class="section">
+            <h3>Buy Products</h3>
+            <div id="buyList"></div>
+        </div>
+        <div id="sellSection" class="section">
+            <h3>Sell Products</h3>
+            <div id="sellList"></div>
+        </div>
+
+        <div id="totalSection" class="section total">
+            <p>Total Profit or Loss: <span id="totalAmount">0$</span></p>
+        </div>
+    </div>
+
+    <script>
+        let totalProfit = 0;
+        let buyProducts = [];
+        let sellProducts = [];
+
+        function addProduct() {
+            const productName = document.getElementById("productName").value;
+            const productPrice = parseFloat(document.getElementById("productPrice").value);
+            const buySell = document.getElementById("buySell").value;
+
+            if (productName === "" || isNaN(productPrice)) {
+                alert("Please fill out all fields correctly.");
+                return;
+            }
+
+            // Create product object
+            const product = {
+                name: productName,
+                price: productPrice,
+                action: buySell
+            };
+
+            // Add product to respective list
+            if (buySell === "buy") {
+                buyProducts.push(product);
+            } else {
+                sellProducts.push(product);
+            }
+
+            // Update the lists and total
+            updateProductLists();
+            calculateProfitLoss();
+
+            // Clear form fields
+            document.getElementById("productName").value = "";
+            document.getElementById("productPrice").value = "";
+            document.getElementById("buySell").value = "buy";
+        }
+
+        function updateProductLists() {
+            // Display the buy products
+            let buyListHTML = '';
+            buyProducts.forEach(product => {
+                buyListHTML += `<div class="product-info buy">${product.name}: $${product.price}</div>`;
+            });
+            document.getElementById("buyList").innerHTML = buyListHTML;
+
+            // Display the sell products
+            let sellListHTML = '';
+            sellProducts.forEach(product => {
+                sellListHTML += `<div class="product-info sell">${product.name}: $${product.price}</div>`;
+            });
+            document.getElementById("sellList").innerHTML = sellListHTML;
+        }
+
+        function calculateProfitLoss() {
+            let totalBuy = buyProducts.reduce((acc, product) => acc + product.price, 0);
+            let totalSell = sellProducts.reduce((acc, product) => acc + product.price, 0);
+
+            totalProfit = totalSell - totalBuy;
+
+            // Corrected string interpolation
+            document.getElementById("totalAmount").textContent = `$${totalProfit.toFixed(2)}`;
+        }
+    </script>
+</body>
+</html>
